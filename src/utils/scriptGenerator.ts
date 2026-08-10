@@ -120,14 +120,13 @@ export function generateJsonConfig(selectedIds: Set<string>, optimizations: Opti
 }
 
 /**
- * Generate an AutoHotkey v2 script that applies FFlags and launches Roblox
+ * Generate a simple AutoHotkey v2 script that writes FFlags to ClientAppSettings.json
+ * in the latest Roblox version folder.
  */
 export function generateAHKScript(selectedIds: Set<string>, optimizations: Optimization[]): string {
   const flags = collectFlags(selectedIds, optimizations);
   const selectedOpts = optimizations.filter(o => selectedIds.has(o.id));
-  const flagLines = Object.entries(flags)
-    .map(([k, v]) => `    flags["${k}"] := ${typeof v === 'string' ? `"${v}"` : v === true ? 'true' : v === false ? 'false' : v}`)
-    .join('\n');
+  const flagsJson = JSON.stringify(flags, null, 2);
 
   return `#Requires AutoHotkey v2.0
 ; ============================================================
@@ -135,91 +134,42 @@ export function generateAHKScript(selectedIds: Set<string>, optimizations: Optim
 ; Applied: ${selectedOpts.map(o => o.name).join(', ')}
 ; ============================================================
 
-; Auto-elevate
-if not A_IsAdmin {
-  Run '*RunAs "' A_AhkPath '" "' A_ScriptFullPath '"'
-  ExitApp()
-}
-
-; Find latest Roblox version
-robloxBase := A_LocalAppData "\\Roblox\\Versions"
-latestVer := ""
+; Find the latest Roblox version folder
+versionsPath := "C:\\Users\\" A_UserName "\\AppData\\Local\\Roblox\\Versions"
+latestDir := ""
 latestTime := 0
-loop files robloxBase "\\*", "D" {
-  if A_LoopFileTimeModified > latestTime {
-    latestTime := A_LoopFileTimeModified
-    latestVer := A_LoopFileFullPath
-  }
-}
 
-if !latestVer {
-  MsgBox("❌ Roblox not found! Is it installed?", "Error", 16)
-  ExitApp()
-}
-
-settingsDir := latestVer "\\ClientSettings"
-settingsFile := settingsDir "\\ClientAppSettings.json"
-
-; Create folder if missing
-if !DirExist(settingsDir)
-  DirCreate(settingsDir)
-
-; Build flags map
-flags := Map()
-${flagLines}
-
-; Read existing JSON
-existing := Map()
-if FileExist(settingsFile) {
-  try {
-    content := FileRead(settingsFile)
-    ; Simple JSON parser for flat objects
-    loop {
-      pos := RegExMatch(content, '"([^"]+)"\\s*:\\s*([^,}\\n]+)', &m, pos ?? 1)
-      if !pos
-        break
-      val := Trim(m[2])
-      if val = "true"
-        existing[m[1]] := true
-      else if val = "false"
-        existing[m[1]] := false
-      else if RegExMatch(val, '^-?\\d+(\\.\\d+)?$')
-        existing[m[1]] := Number(val)
-      else
-        existing[m[1]] := Trim(val, '"')
-      pos += StrLen(m[0])
+Loop Files versionsPath "\\*", "D" {
+    if (A_LoopFileTimeModified > latestTime) {
+        latestTime := A_LoopFileTimeModified
+        latestDir := A_LoopFileFullPath
     }
-  }
 }
 
-; Merge flags
-for k, v in flags
-  existing[k] := v
-
-; Write JSON
-json := "{\\n"
-i := 0
-for k, v in existing {
-  i++
-  comma := (i < existing.Count) ? "," : ""
-  if v = true
-    json .= '  "' k '": true' comma "\\n"
-  else if v = false
-    json .= '  "' k '": false' comma "\\n"
-  else if (v is Number)
-    json .= '  "' k '": ' v comma "\\n"
-  else
-    json .= '  "' k '": "' v '"' comma "\\n"
+if (latestDir = "") {
+    MsgBox("Could not find Roblox installation! Is Roblox installed?", "Error", 16)
+    ExitApp()
 }
-json .= "}"
 
-FileDelete(settingsFile)
-FileAppend(json, settingsFile, "UTF-8")
+; Create ClientSettings folder if it does not exist
+settingsDir := latestDir "\\ClientSettings"
+if !DirExist(settingsDir)
+    DirCreate(settingsDir)
 
-MsgBox("✅ Applied " flags.Count " FFlags!\\nRestart Roblox to apply.", "PS99 Optimiser", 64)
+; Write ClientAppSettings.json with the selected flags
+settingsFile := settingsDir "\\ClientAppSettings.json"
+if FileExist(settingsFile)
+    FileDelete(settingsFile)
+
+jsonContent := "
+(
+${flagsJson}
+)"
+
+FileAppend(jsonContent, settingsFile, "UTF-8")
+
+MsgBox("Flags applied! Restart Roblox for changes to take effect.", "PS99 Optimiser", 64)
 ExitApp()
-
-Escape:: ExitApp()
 `;
 }
 
