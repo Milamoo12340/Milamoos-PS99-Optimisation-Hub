@@ -17,24 +17,21 @@ export const optimizationPresets: OptimizationPreset[] = [
     color: 'bg-red-500',
     riskLevel: 'High',
     optimizations: [
-      'DFIntTaskSchedulerTargetFps',
-      'FFlagTaskSchedulerLimitTargetFpsTo2402',
-      'DebugForceMSAASamples',
-      'DFFlagTextureQualityOverrideEnabled',
-      'DFIntTextureQualityOverride',
-      'FFlagDisablePostFx',
-      'DFFlagDebugRenderForceTechnologyVoxel',
-      'DFIntCSGLevelOfDetailSwitchingDistance',
-      'FIntFRMMaxGrassDistance',
-      'FIntRenderShadowIntensity',
-      'FIntTerrainArraySliceSize',
-      'FIntRomarkStartWithGraphicQualityLevel',
-      'DFIntDebugRestrictGCDistance',
-      'FFlagMSRefactor5',
-      'FFlagDebugSSAOForce',
-      'FFlagDebugSkyGray',
-      'DFIntTextureCompositorActiveJobs',
-      'FIntViewportFrameMaxSize'
+      'infinite-fps',
+      'disable-antialiasing',
+      'low-quality-textures',
+      'disable-post-fx',
+      'force-voxel-lighting',
+      'low-quality-meshes',
+      'remove-grass',
+      'disable-shadows',
+      'disable-ssao',
+      'gray-sky',
+      'limit-texture-jobs',
+      'reduce-terrain',
+      'low-graphic-quality',
+      'disable-particles',
+      'disable-wind'
     ]
   },
   {
@@ -45,17 +42,15 @@ export const optimizationPresets: OptimizationPreset[] = [
     color: 'bg-orange-500',
     riskLevel: 'Medium',
     optimizations: [
-      'DFIntTaskSchedulerTargetFps',
-      'DebugForceMSAASamples',
-      'FFlagDisablePostFx',
-      'FIntFRMMaxGrassDistance',
-      'FIntRenderShadowIntensity',
-      'FFlagDebugSSAOForce',
-      'FFlagAdServiceEnabled',
-      'FIntRobloxGuiBlurIntensity',
-      'FFlagGlobalWindActivated',
-      'DFFlagDebugPauseVoxelizer',
-      'FFlagEnableCommandAutocomplete'
+      'infinite-fps',
+      'disable-antialiasing',
+      'disable-post-fx',
+      'remove-grass',
+      'disable-shadows',
+      'disable-ssao',
+      'disable-ads',
+      'disable-wind',
+      'disable-particles'
     ]
   },
   {
@@ -66,19 +61,19 @@ export const optimizationPresets: OptimizationPreset[] = [
     color: 'bg-blue-500',
     riskLevel: 'Medium',
     optimizations: [
-      'DFFlagTextureQualityOverrideEnabled',
-      'DFIntTextureQualityOverride',
-      'FIntTextureCompositorLowResFactor',
-      'DFFlagDebugRenderForceTechnologyVoxel',
-      'DFIntCSGLevelOfDetailSwitchingDistance',
-      'FIntFRMMaxGrassDistance',
-      'FIntRenderShadowIntensity',
-      'FIntTerrainArraySliceSize',
-      'FIntRomarkStartWithGraphicQualityLevel',
-      'DFIntDebugRestrictGCDistance',
-      'FFlagDebugSSAOForce',
-      'FFlagDebugSkyGray',
-      'DFIntTextureCompositorActiveJobs'
+      'low-quality-textures',
+      'force-voxel-lighting',
+      'low-quality-meshes',
+      'remove-grass',
+      'disable-shadows',
+      'disable-ssao',
+      'gray-sky',
+      'limit-texture-jobs',
+      'reduce-terrain',
+      'low-graphic-quality',
+      'disable-wind',
+      'disable-particles',
+      'disable-water'
     ]
   },
   {
@@ -89,14 +84,12 @@ export const optimizationPresets: OptimizationPreset[] = [
     color: 'bg-green-500',
     riskLevel: 'Low',
     optimizations: [
-      'DebugForceMSAASamples',
-      'FIntFRMMaxGrassDistance',
-      'FFlagDebugSSAOForce',
-      'FFlagAdServiceEnabled',
-      'FIntRobloxGuiBlurIntensity',
-      'FFlagGlobalWindActivated',
-      'FFlagEnableCommandAutocomplete',
-      'DFFlagEnableRequestAsyncCompression'
+      'disable-antialiasing',
+      'remove-grass',
+      'disable-ssao',
+      'disable-ads',
+      'disable-wind',
+      'async-compression'
     ]
   },
   {
@@ -105,30 +98,43 @@ export const optimizationPresets: OptimizationPreset[] = [
     description: 'Disables telemetry and data collection while maintaining performance.',
     icon: '🔒',
     color: 'bg-purple-500',
-    riskLevel: 'High',
+    riskLevel: 'Low',
     optimizations: [
-      'FFlagDebugDisableTelemetryEphemeralCounter',
-      'FFlagDebugDisableTelemetryEphemeralStat',
-      'FFlagDebugDisableTelemetryEventIngest',
-      'FFlagDebugDisableTelemetryPoint',
-      'FFlagDebugDisableTelemetryV2Counter',
-      'FFlagDebugDisableTelemetryV2Event',
-      'FFlagDebugDisableTelemetryV2Stat',
-      'FFlagAdServiceEnabled'
+      'disable-telemetry',
+      'disable-ads'
     ]
   },
   {
-    id: 'visual-quality',
-    name: 'Visual Quality',
-    description: 'Minimal performance impact optimizations that enhance visual experience.',
-    icon: '🎨',
+    id: 'streaming',
+    name: 'Streaming & Recording',
+    description: 'Stable framerate for content creation. Reduces GPU spikes without sacrificing too much quality.',
+    icon: '🎬',
+    color: 'bg-cyan-500',
+    riskLevel: 'Medium',
+    optimizations: [
+      'disable-antialiasing',
+      'disable-particles',
+      'disable-ssao',
+      'disable-wind',
+      'async-compression',
+      'limit-texture-jobs',
+      'reduce-animations'
+    ]
+  },
+  {
+    id: 'visual-clarity',
+    name: 'Visual Clarity',
+    description: 'Removes visual clutter for a cleaner view without aggressive quality loss.',
+    icon: '👁️',
     color: 'bg-pink-500',
     riskLevel: 'Low',
     optimizations: [
-      'DFFlagEnableRequestAsyncCompression',
-      'FFlagGlobalWindActivated',
-      'FIntRobloxGuiBlurIntensity',
-      'FFlagEnableCommandAutocomplete'
+      'disable-post-fx',
+      'disable-wind',
+      'remove-grass',
+      'disable-water',
+      'async-compression',
+      'disable-ads'
     ]
   }
 ];
